@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Femina Anzil — Data Science & AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#0B1F3A; --sky:#1E6FA8; --accent:#00C9A7;
+      --sand:#F5A623; --light:#F4F7FB; --white:#FFFFFF;
+      --text:#1A2B3C; --muted:#607080; --border:#DDE4EE;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Inter',sans-serif; background:var(--light); color:var(--text); line-height:1.6; }
+
+    nav {
+      position:fixed; top:0; left:0; right:0;
+      background:rgba(11,31,58,0.97); backdrop-filter:blur(8px);
+      z-index:100; padding:0 2rem;
+      display:flex; align-items:center; justify-content:space-between; height:56px;
+    }
+    .nav-brand { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem; color:var(--accent); }
+    .nav-links { display:flex; gap:1.75rem; list-style:none; }
+    .nav-links a { color:rgba(255,255,255,0.75); text-decoration:none; font-size:0.875rem; font-weight:500; transition:color .2s; }
+    .nav-links a:hover { color:var(--accent); }
+
+    .hero {
+      min-height:100vh;
+      background:linear-gradient(135deg,var(--navy) 0%,#0F3460 60%,#1E6FA8 100%);
+      display:flex; align-items:center; justify-content:center;
+      text-align:center; padding:5rem 2rem 3rem; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0;
+      background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%2300C9A7' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-content { position:relative; z-index:1; max-width:720px; }
+    .hero-badge {
+      display:inline-block; background:rgba(0,201,167,0.15);
+      border:1px solid rgba(0,201,167,0.4); color:var(--accent);
+      font-size:0.75rem; font-weight:600; letter-spacing:1.5px;
+      text-transform:uppercase; padding:0.35rem 1rem; border-radius:20px; margin-bottom:1.5rem;
+    }
+    .hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(2.2rem,5vw,3.5rem); font-weight:700; color:var(--white); line-height:1.15; margin-bottom:0.5rem; }
+    .hero h1 span { color:var(--accent); }
+    .hero-role { font-size:1rem; color:rgba(255,255,255,0.65); margin-bottom:1.5rem; }
+    .hero-desc { font-size:1.05rem; color:rgba(255,255,255,0.8); max-width:580px; margin:0 auto 2.5rem; line-height:1.7; }
+    .hero-stats { display:flex; justify-content:center; gap:2.5rem; margin-bottom:2.5rem; flex-wrap:wrap; }
+    .stat { text-align:center; }
+    .stat-num { font-family:'Space Grotesk',sans-serif; font-size:1.8rem; font-weight:700; color:var(--accent); display:block; }
+    .stat-label { font-size:0.72rem; color:rgba(255,255,255,0.55); text-transform:uppercase; letter-spacing:1px; }
+    .hero-cta { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.7rem 1.6rem; border-radius:6px; font-weight:600; font-size:0.875rem; text-decoration:none; transition:all .2s; border:none; cursor:pointer; }
+    .btn-primary { background:var(--accent); color:var(--navy); }
+    .btn-primary:hover { background:#00b396; transform:translateY(-1px); }
+    .btn-outline { background:transparent; border:1.5px solid rgba(255,255,255,0.35); color:var(--white); }
+    .btn-outline:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-1px); }
+
+    section { padding:5rem 2rem; }
+    .container { max-width:1060px; margin:0 auto; }
+    .section-tag { font-size:0.72rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:0.5rem; }
+    .section-title { font-family:'Space Grotesk',sans-serif; font-size:clamp(1.6rem,3vw,2.2rem); font-weight:700; color:var(--navy); margin-bottom:3rem; }
+
+    #about { background:var(--white); }
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; }
+    .about-text p { color:var(--muted); margin-bottom:1rem; font-size:0.975rem; line-height:1.8; }
+    .about-cards { display:flex; flex-direction:column; gap:1rem; }
+    .about-card { background:var(--light); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:6px; padding:1rem 1.25rem; }
+    .about-card-title { font-weight:600; font-size:0.875rem; color:var(--navy); margin-bottom:0.25rem; }
+    .about-card-sub { font-size:0.8rem; color:var(--muted); }
+
+    #projects { background:var(--light); }
+    .projects-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; }
+    .project-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:1.5rem; transition:box-shadow .2s,transform .2s; position:relative; overflow:hidden; display:flex; flex-direction:column; }
+    .project-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+    .card-1::before { background:var(--sand); }
+    .card-2::before { background:var(--accent); }
+    .card-3::before { background:#7C3AED; }
+    .card-4::before { background:#E53E3E; }
+    .card-5::before { background:#2B6CB0; }
+    .card-6::before { background:#38A169; }
+    .project-card:hover { box-shadow:0 8px 32px rgba(11,31,58,0.1); transform:translateY(-3px); }
+    .project-tag { display:inline-block; font-size:0.68rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; padding:0.2rem 0.6rem; border-radius:20px; margin-bottom:0.85rem; }
+    .tag-orange { background:rgba(245,166,35,0.15); color:#c47f00; }
+    .tag-green  { background:rgba(0,201,167,0.12); color:#00a085; }
+    .tag-purple { background:rgba(124,58,237,0.12); color:#6D28D9; }
+    .tag-red    { background:rgba(229,62,62,0.12);  color:#C53030; }
+    .tag-blue   { background:rgba(43,108,176,0.12); color:#2B6CB0; }
+    .tag-teal   { background:rgba(56,161,105,0.12); color:#276749; }
+    .project-title { font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:700; color:var(--navy); margin-bottom:0.65rem; line-height:1.35; }
+    .project-desc { font-size:0.825rem; color:var(--muted); line-height:1.7; margin-bottom:1rem; flex:1; }
+    .metrics { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:1rem; }
+    .metric { background:var(--light); border-radius:6px; padding:0.5rem 0.65rem; text-align:center; }
+    .metric-val { font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:700; color:var(--sky); display:block; }
+    .metric-label { font-size:0.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; }
+    .tech-stack { display:flex; flex-wrap:wrap; gap:0.35rem; margin-bottom:1rem; }
+    .tech-tag { font-size:0.68rem; font-weight:500; background:var(--light); border:1px solid var(--border); color:var(--muted); padding:0.18rem 0.55rem; border-radius:4px; }
+    .project-links { display:flex; gap:0.6rem; margin-top:auto; }
+    .link-btn { font-size:0.78rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:5px; text-decoration:none; transition:all .2s; }
+    .link-btn-primary { background:var(--navy); color:var(--white); }
+    .link-btn-primary:hover { background:var(--sky); }
+    .link-btn-secondary { background:var(--light); border:1px solid var(--border); color:var(--muted); }
+    .link-btn-secondary:hover { border-color:var(--accent); color:var(--accent); }
+
+    #skills { background:var(--white); }
+    .skills-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .skill-group { background:var(--light); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+    .skill-group-title { font-weight:700; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px; color:var(--sky); margin-bottom:0.85rem; }
+    .skill-list { list-style:none; }
+    .skill-list li { font-size:0.875rem; color:var(--text); padding:0.3rem 0; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.5rem; }
+    .skill-list li:last-child { border-bottom:none; }
+    .skill-list li::before { content:'▸'; color:var(--accent); font-size:0.7rem; flex-shrink:0; }
+
+    #publications { background:var(--light); }
+    .pub-card { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:1.5rem 1.75rem; display:flex; gap:1.25rem; align-items:flex-start; }
+    .pub-icon { width:44px; height:44px; flex-shrink:0; background:rgba(0,201,167,0.12); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+    .pub-title { font-weight:700; font-size:0.975rem; color:var(--navy); margin-bottom:0.35rem; line-height:1.4; }
+    .pub-meta { font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem; }
+    .pub-badge { display:inline-block; background:rgba(245,166,35,0.15); color:#c47f00; font-size:0.7rem; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; padding:0.2rem 0.6rem; border-radius:4px; }
+
+    #contact { background:var(--navy); text-align:center; }
+    #contact .section-title { color:var(--white); }
+    #contact .section-tag { color:var(--accent); }
+    .contact-desc { color:rgba(255,255,255,0.65); max-width:480px; margin:-2rem auto 2rem; font-size:0.975rem; line-height:1.7; }
+    .contact-links { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
+    .contact-link { display:inline-flex; align-items:center; gap:0.5rem; padding:0.7rem 1.5rem; border-radius:6px; font-size:0.875rem; font-weight:600; text-decoration:none; transition:all .2s; border:1.5px solid rgba(255,255,255,0.2); color:var(--white); }
+    .contact-link:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
+
+    footer { background:#060F1E; text-align:center; padding:1.5rem; font-size:0.8rem; color:rgba(255,255,255,0.35); }
+
+    @media(max-width:900px) { .projects-grid { grid-template-columns:1fr 1fr; } }
+    @media(max-width:640px) {
+      .about-grid,.projects-grid,.skills-grid { grid-template-columns:1fr; }
+      .hero-stats { gap:1.5rem; }
+      .nav-links { gap:1rem; }
+    }
+
+    /* ── CERTIFICATIONS ── */
+    #certifications { background: var(--white); }
+    .cert-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:2rem; }
+    .cert-tab { padding:0.5rem 1.25rem; border-radius:20px; font-size:0.825rem; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:var(--light); color:var(--muted); transition:all .2s; }
+    .cert-tab.active { background:var(--navy); color:var(--white); border-color:var(--navy); }
+    .cert-tab:hover:not(.active) { border-color:var(--accent); color:var(--accent); }
+    .cert-panel { display:none; }
+    .cert-panel.active { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+    .cert-card { background:var(--light); border:1px solid var(--border); border-radius:8px; padding:1rem 1.25rem; display:flex; align-items:flex-start; gap:0.85rem; }
+    .cert-icon { width:38px; height:38px; flex-shrink:0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; }
+    .cert-icon.pmi { background:#E8F4FD; color:#2B6CB0; }
+    .cert-icon.ms  { background:#FFF0F0; color:#E53E3E; }
+    .cert-icon.mit { background:#F0F4FF; color:#4A5568; }
+    .cert-icon.ut  { background:#FFF5E6; color:#C47F00; }
+    .cert-icon.other { background:#F0FFF4; color:#276749; }
+    .cert-name { font-weight:600; font-size:0.85rem; color:var(--navy); margin-bottom:0.2rem; line-height:1.3; }
+    .cert-issuer { font-size:0.75rem; color:var(--muted); margin-bottom:0.15rem; }
+    .cert-date { font-size:0.7rem; color:var(--accent); font-weight:600; }
+    @media(max-width:640px){ .cert-panel.active { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">Femina Anzil</span>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#publications">Publications</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-badge">✈ Aviation AI · Big Data · UAE</span>
+    <h1>Femina <span>Anzil</span></h1>
+    <p class="hero-role">MSc Data Science & Artificial Intelligence · Emirates Aviation University<br>PMO Manager · United Al Saqer Group, UAE</p>
+    <p class="hero-desc">Building AI-powered systems where aviation safety meets big data intelligence. Specialising in climate risk modelling, visibility prediction, and explainable machine learning for UAE operations.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">0.9726</span><span class="stat-label">Best R²</span></div>
+      <div class="stat"><span class="stat-num">6</span><span class="stat-label">Projects</span></div>
+      <div class="stat"><span class="stat-num">21M</span><span class="stat-label">ERA5 Records</span></div>
+      <div class="stat"><span class="stat-num">133K</span><span class="stat-label">Waypoints</span></div>
+    </div>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <p class="section-tag">About Me</p>
+    <h2 class="section-title">Research meets real-world operations</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I am a data science professional and MSc student at Emirates Aviation University, UAE, where my research focuses on applying big data and machine learning to solve real-world challenges in aviation safety, visibility prediction, and environmental sustainability.</p>
+        <p>With extensive experience in project management as PMO Manager at United Al Saqer Group, I bring a unique combination of operational leadership and cutting-edge AI research to every project I undertake.</p>
+        <p>My work spans multi-hazard climate risk intelligence, atmospheric visibility forecasting, air quality analytics, and real estate prediction — all built on rigorous data pipelines and explainable AI frameworks.</p>
+      </div>
+      <div class="about-cards">
+        <div class="about-card">
+          <div class="about-card-title">🎓 MSc Data Science & Artificial Intelligence</div>
+          <div class="about-card-sub">Emirates Aviation University, UAE · In progress</div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-title">💼 PMO Manager</div>
+          <div class="about-card-sub">United Al Saqer Group, UAE · Present</div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-title">✈ Research Focus</div>
+          <div class="about-card-sub">Aviation AI · Big Data · Climate Risk · Explainable ML · Visibility Prediction</div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-title">📍 Location</div>
+          <div class="about-card-sub">United Arab Emirates</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="container">
+    <p class="section-tag">Research Projects</p>
+    <h2 class="section-title">Six projects across aviation, environment & real estate AI</h2>
+    <div class="projects-grid">
+
+      <!-- P1: Climate Risk -->
+      <div class="project-card card-1">
+        <span class="project-tag tag-orange">Big Data · XGBoost · SHAP</span>
+        <h3 class="project-title">Big Data-Driven Climate Risk Intelligence System for UAE Aviation</h3>
+        <p class="project-desc">Multi-hazard AI framework predicting turbulence, jet stream impact, sandstorm, crosswind, and heat degradation risks for UAE flight operations. Built on 133,480 ADS-B waypoints, ERA5 (21M records), NOAA METAR, SIGMET, and OpenAP aircraft performance data with Gradio dashboard.</p>
+        <div class="metrics">
+          <div class="metric"><span class="metric-val">0.9726</span><span class="metric-label">R² Score</span></div>
+          <div class="metric"><span class="metric-val">~90%</span><span class="metric-label">Turb. Acc.</span></div>
+          <div class="metric"><span class="metric-val">37</span><span class="metric-label">Features</span></div>
+          <div class="metric"><span class="metric-val">5</span><span class="metric-label">Risk Modules</span></div>
+        </div>
+        <div class="tech-stack">
+          <span class="tech-tag">XGBoost</span><span class="tech-tag">Optuna</span><span class="tech-tag">SHAP</span>
+          <span class="tech-tag">ERA5</span><span class="tech-tag">PySpark</span><span class="tech-tag">Gradio</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/feminaanzil/climate-risk-intelligence-uae" class="link-btn link-btn-primary">GitHub →</a>
+        </div>
+      </div>
+
+      <!-- P2: Contrail -->
+      <div class="project-card card-2">
+        <span class="project-tag tag-green">Deep Learning · Sustainability</span>
+        <h3 class="project-title">AI-Powered Contrail Formation Prediction for UAE Aviation</h3>
+        <p class="project-desc">Deep learning system predicting contrail formation risk across UAE airspace using OpenSky ADS-B flight trajectories and ERA5 atmospheric reanalysis. Applied Schmidt-Appleman criterion with SHAP explainability for climate-optimised rerouting recommendations.</p>
+        <div class="metrics">
+          <div class="metric"><span class="metric-val">96.8%</span><span class="metric-label">Accuracy</span></div>
+          <div class="metric"><span class="metric-val">0.972</span><span class="metric-label">AUC</span></div>
+          <div class="metric"><span class="metric-val">21.7M</span><span class="metric-label">ERA5 Rows</span></div>
+          <div class="metric"><span class="metric-val">12</span><span class="metric-label">Features</span></div>
+        </div>
+        <div class="tech-stack">
+          <span class="tech-tag">MLP</span><span class="tech-tag">ERA5</span><span class="tech-tag">PySpark</span>
+          <span class="tech-tag">SHAP</span><span class="tech-tag">xarray</span><span class="tech-tag">Keras</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/feminaanzil/contrail-prediction-uae" class="link-btn link-btn-primary">GitHub →</a>
+        </div>
+      </div>
+
+      <!-- P3: Dust Alert -->
+      <div class="project-card card-3">
+        <span class="project-tag tag-purple">Classification · METAR · Air Quality</span>
+        <h3 class="project-title">DUST ALERT AUH: Low Visibility Alert Prediction System</h3>
+        <p class="project-desc">ML-based binary classification system predicting low visibility alert days at Abu Dhabi International Airport by fusing METAR meteorological data with air quality indicators (PM2.5, PM10, NO2, SO2). Compared 7 models with SHAP explainability — humidity and PM2.5 identified as dominant drivers.</p>
+        <div class="metrics">
+          <div class="metric"><span class="metric-val">0.8752</span><span class="metric-label">AUC</span></div>
+          <div class="metric"><span class="metric-val">85.71%</span><span class="metric-label">Accuracy</span></div>
+          <div class="metric"><span class="metric-val">695</span><span class="metric-label">Observations</span></div>
+          <div class="metric"><span class="metric-val">8</span><span class="metric-label">Features</span></div>
+        </div>
+        <div class="tech-stack">
+          <span class="tech-tag">Random Forest</span><span class="tech-tag">XGBoost</span><span class="tech-tag">SVM</span>
+          <span class="tech-tag">SHAP</span><span class="tech-tag">METAR</span><span class="tech-tag">Iowa Mesonet</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/feminaanzil/dust-alert-auh" class="link-btn link-btn-primary">GitHub →</a>
+        </div>
+      </div>
+
+      <!-- P4: Haze Guard -->
+      <div class="project-card card-4">
+        <span class="project-tag tag-red">LSTM · Visibility · AUH</span>
+        <h3 class="project-title">HAZE GUARD AUH: Visibility Prediction System for Abu Dhabi Airport</h3>
+        <p class="project-desc">Predictive model for atmospheric visibility forecasting at Abu Dhabi International Airport using 5 years of meteorological and air quality data (2020–2025). Compared Linear Regression, Random Forest, ANN, and LSTM models — ANN achieved best R² with LSTM capturing temporal dependencies.</p>
+        <div class="metrics">
+          <div class="metric"><span class="metric-val">0.13</span><span class="metric-label">ANN R²</span></div>
+          <div class="metric"><span class="metric-val">0.35km</span><span class="metric-label">MAE</span></div>
+          <div class="metric"><span class="metric-val">2,043</span><span class="metric-label">Observations</span></div>
+          <div class="metric"><span class="metric-val">5 yrs</span><span class="metric-label">Coverage</span></div>
+        </div>
+        <div class="tech-stack">
+          <span class="tech-tag">LSTM</span><span class="tech-tag">ANN</span><span class="tech-tag">Random Forest</span>
+          <span class="tech-tag">Linear Regression</span><span class="tech-tag">Keras</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/feminaanzil/haze-guard-auh" class="link-btn link-btn-primary">GitHub →</a>
+        </div>
+      </div>
+
+      <!-- P5: Green Airport -->
+      <div class="project-card card-5">
+        <span class="project-tag tag-blue">Air Quality · ARIMA · Geospatial</span>
+        <h3 class="project-title">Data-Driven Approaches to Green Airport Management</h3>
+        <p class="project-desc">Comprehensive framework for sustainable airport management analysing air quality across 5 Abu Dhabi monitoring stations (Musaffah, Al Mafraq, Hamdan Street, Baniyas, Bain Al Jessrain). Applied ARIMA forecasting, K-Means clustering, PCA, and geospatial heatmaps to identify pollution hotspots near airport zones.</p>
+        <div class="metrics">
+          <div class="metric"><span class="metric-val">73%</span><span class="metric-label">PCA Variance</span></div>
+          <div class="metric"><span class="metric-val">K=4</span><span class="metric-label">Clusters</span></div>
+          <div class="metric"><span class="metric-val">5</span><span class="metric-label">Locations</span></div>
+          <div class="metric"><span class="metric-val">ARIMA</span><span class="metric-label">Forecasting</span></div>
+        </div>
+        <div class="tech-stack">
+          <span class="tech-tag">ARIMA</span><span class="tech-tag">K-Means</span><span class="tech-tag">PCA</span>
+          <span class="tech-tag">Folium</span><span class="tech-tag">Seaborn</span><span class="tech-tag">Pandas</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/feminaanzil/green-airport-management" class="link-btn link-btn-primary">GitHub →</a>
+        </div>
+      </div>
+
+      <!-- P6: UK House Price -->
+      <div class="project-card card-6">
+        <span class="project-tag tag-teal">Regression · Real Estate · UK</span>
+        <h3 class="project-title">UK House Price Prediction (2020–2024)</h3>
+        <p class="project-desc">Predictive model for UK house prices using HM Land Registry data — 144,225 records filtered to 24,300 rows across 54 columns. Applied log-transformed Linear Regression with robust standard errors identifying location as the dominant price driver. Supports investment targeting and market analysis.</p>
+        <div class="metrics">
+          <div class="metric"><span class="metric-val">96.8%</span><span class="metric-label">R² Score</span></div>
+          <div class="metric"><span class="metric-val">£16,154</span><span class="metric-label">MAE</span></div>
+          <div class="metric"><span class="metric-val">24,300</span><span class="metric-label">Records</span></div>
+          <div class="metric"><span class="metric-val">54</span><span class="metric-label">Variables</span></div>
+        </div>
+        <div class="tech-stack">
+          <span class="tech-tag">Linear Regression</span><span class="tech-tag">Log Transform</span>
+          <span class="tech-tag">EDA</span><span class="tech-tag">HM Land Registry</span><span class="tech-tag">Pandas</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/feminaanzil/uk-house-price-prediction" class="link-btn link-btn-primary">GitHub →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="container">
+    <p class="section-tag">Technical Skills</p>
+    <h2 class="section-title">Tools & technologies</h2>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-title">Languages & Data</div>
+        <ul class="skill-list">
+          <li>Python</li><li>PySpark</li><li>SQL</li>
+          <li>xarray / NetCDF</li><li>Pandas · NumPy</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Machine Learning</div>
+        <ul class="skill-list">
+          <li>XGBoost · LightGBM</li><li>Random Forest</li>
+          <li>MLP · ANN · Deep Learning</li>
+          <li>LSTM (Time Series)</li><li>Optuna · Hyperparameter Tuning</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Explainability & Viz</div>
+        <ul class="skill-list">
+          <li>SHAP (all plot types)</li><li>Matplotlib · Seaborn</li>
+          <li>Gradio Dashboard</li><li>Folium (Geospatial)</li><li>Plotly</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Aviation & Env. Data</div>
+        <ul class="skill-list">
+          <li>ERA5 Reanalysis (ECMWF)</li><li>OpenSky ADS-B</li>
+          <li>NOAA METAR / SIGMET</li><li>OurAirports Dataset</li>
+          <li>OpenAP · Iowa Mesonet</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Statistical Methods</div>
+        <ul class="skill-list">
+          <li>ARIMA · Time Series</li><li>PCA · Dimensionality Reduction</li>
+          <li>K-Means Clustering</li><li>Linear & Log Regression</li>
+          <li>Feature Engineering</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-title">Project Management</div>
+        <ul class="skill-list">
+          <li>PMO Leadership</li><li>Stakeholder Management</li>
+          <li>Risk Management</li><li>Agile · Waterfall</li>
+          <li>Strategic Planning</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="publications">
+  <div class="container">
+    <p class="section-tag">Publications & Conferences</p>
+    <h2 class="section-title">Research outputs</h2>
+    <div class="pub-card">
+      <div class="pub-icon">📄</div>
+      <div>
+        <div class="pub-title">Data-Driven Approaches to Green Airport Management</div>
+        <div class="pub-meta">
+          Femina Anzil · Emirates Aviation University, UAE<br>
+          International Conference on Aviation Development and Advancement (ICADA 2025)<br>
+          Paper presented at conference · Submitted for journal publication
+        </div>
+        <span class="pub-badge">Conference Presented · Journal Submission In Progress</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="certifications">
+  <div class="container">
+    <p class="section-tag">Certifications</p>
+    <h2 class="section-title">Professional credentials</h2>
+    <div class="cert-tabs">
+      <button class="cert-tab active" onclick="showCerts(event,'pm')">📋 Project Management</button>
+      <button class="cert-tab" onclick="showCerts(event,'ai')">🤖 AI &amp; Data Science</button>
+      <button class="cert-tab" onclick="showCerts(event,'ms')">💻 Microsoft</button>
+      <button class="cert-tab" onclick="showCerts(event,'edu')">🎓 Education</button>
+      <button class="cert-tab" onclick="showCerts(event,'other')">⚡ Other</button>
+    </div>
+
+    <div id="cert-pm" class="cert-panel active">
+      <div class="cert-card"><div class="cert-icon pmi">PMP</div><div><div class="cert-name">Project Management Professional (PMP)</div><div class="cert-issuer">Project Management Institute</div><div class="cert-date">Issued Apr 2024 · Expires Apr 2027 · ID: 3799664</div></div></div>
+      <div class="cert-card"><div class="cert-icon pmi">PMI</div><div><div class="cert-name">Generative AI Overview for Project Managers</div><div class="cert-issuer">Project Management Institute</div><div class="cert-date">Issued Sep 2023</div></div></div>
+      <div class="cert-card"><div class="cert-icon other">HR</div><div><div class="cert-name">Human Resource Analytics</div><div class="cert-issuer">MindCypress</div><div class="cert-date">Issued Aug 2024 · ID: 112698156</div></div></div>
+      <div class="cert-card"><div class="cert-icon pmi">ACP</div><div><div class="cert-name">PMI Agile Certified Practitioner (PMI-ACP)</div><div class="cert-issuer">Project Management Institute</div><div class="cert-date">PMI Certified · Agile · Scrum · Kanban · Lean</div></div></div>
+    </div>
+
+    <div id="cert-ai" class="cert-panel">
+      <div class="cert-card"><div class="cert-icon mit">MIT</div><div><div class="cert-name">Digital Transformation: From AI &amp; IoT to Cloud, Blockchain and Cybersecurity</div><div class="cert-issuer">MIT Professional Education</div><div class="cert-date">Sep 2023 – Dec 2023</div></div></div>
+      <div class="cert-card"><div class="cert-icon ut">UT</div><div><div class="cert-name">Post Graduate Program in AI &amp; ML Business Applications</div><div class="cert-issuer">The University of Texas at Austin</div><div class="cert-date">Jan 2025 – Jun 2025 · AI · Computer Vision · NLP</div></div></div>
+      <div class="cert-card"><div class="cert-icon ut">UT</div><div><div class="cert-name">Post Graduate Degree in Data Science and Business Analytics</div><div class="cert-issuer">The University of Texas at Austin</div><div class="cert-date">Mar 2024 – Sep 2024 · Python · Power BI · Big Data</div></div></div>
+      <div class="cert-card"><div class="cert-icon other">DS</div><div><div class="cert-name">Data Science, Data Analytics and Machine Learning Professional</div><div class="cert-issuer">London International Studies and Research Center</div><div class="cert-date">Issued Aug 2023</div></div></div>
+      <div class="cert-card"><div class="cert-icon other">AI</div><div><div class="cert-name">Generative AI Conclave: LangChain Certification Programme</div><div class="cert-issuer">Middlesex University Dubai</div><div class="cert-date">Issued Feb 2024 · GenAI · LLM · LangChain</div></div></div>
+      <div class="cert-card"><div class="cert-icon other">LN</div><div><div class="cert-name">AI Case Studies in Different Business Industries</div><div class="cert-issuer">LinkedIn Learning</div><div class="cert-date">Issued Aug 2023</div></div></div>
+    </div>
+
+    <div id="cert-ms" class="cert-panel">
+      <div class="cert-card"><div class="cert-icon ms">PBI</div><div><div class="cert-name">Microsoft Certified: Power BI Data Analyst Associate</div><div class="cert-issuer">Microsoft</div><div class="cert-date">Issued Dec 2022 · Expired Dec 2025 · ID: I549-6047</div></div></div>
+      <div class="cert-card"><div class="cert-icon ms">AZ</div><div><div class="cert-name">Microsoft Azure Fundamentals</div><div class="cert-issuer">Microsoft</div><div class="cert-date">Issued Sep 2022</div></div></div>
+      <div class="cert-card"><div class="cert-icon ms">AZ</div><div><div class="cert-name">Microsoft Azure Data Fundamentals</div><div class="cert-issuer">Microsoft</div><div class="cert-date">Issued Sep 2022</div></div></div>
+      <div class="cert-card"><div class="cert-icon ms">D365</div><div><div class="cert-name">Microsoft Dynamics 365 Fundamentals (CRM)</div><div class="cert-issuer">Microsoft</div><div class="cert-date">Issued Aug 2022</div></div></div>
+      <div class="cert-card"><div class="cert-icon ms">PP</div><div><div class="cert-name">Microsoft Certified Power Platform Fundamentals</div><div class="cert-issuer">Microsoft</div><div class="cert-date">Issued Mar 2022 · ID: MS0618487032</div></div></div>
+      <div class="cert-card"><div class="cert-icon ms">AZ</div><div><div class="cert-name">Microsoft Azure Infrastructure and Deployment</div><div class="cert-issuer">Microsoft</div><div class="cert-date">Issued Feb 2019</div></div></div>
+      <div class="cert-card"><div class="cert-icon ms">MCSE</div><div><div class="cert-name">Microsoft Certified Solutions Expert: Productivity</div><div class="cert-issuer">Microsoft</div><div class="cert-date">Issued Feb 2019 · ID: H048-4520</div></div></div>
+    </div>
+
+    <div id="cert-edu" class="cert-panel">
+      <div class="cert-card"><div class="cert-icon pmi">EAU</div><div><div class="cert-name">Master of Science — Data Science and Artificial Intelligence</div><div class="cert-issuer">Emirates Aviation University, UAE</div><div class="cert-date">Apr 2025 – Dec 2026 · In progress</div></div></div>
+      <div class="cert-card"><div class="cert-icon ut">UT</div><div><div class="cert-name">Post Graduate Program in AI &amp; ML Business Applications</div><div class="cert-issuer">The University of Texas at Austin</div><div class="cert-date">Jan 2025 – Jun 2025</div></div></div>
+      <div class="cert-card"><div class="cert-icon ut">UT</div><div><div class="cert-name">Post Graduate Degree in Data Science and Business Analytics</div><div class="cert-issuer">The University of Texas at Austin</div><div class="cert-date">Mar 2024 – Sep 2024</div></div></div>
+      <div class="cert-card"><div class="cert-icon other">KM</div><div><div class="cert-name">B.Tech — Computer Science</div><div class="cert-issuer">KMCT College of Engineering</div><div class="cert-date">Aug 2002 – Jul 2006</div></div></div>
+    </div>
+
+    <div id="cert-other" class="cert-panel">
+      <div class="cert-card"><div class="cert-icon other">ORA</div><div><div class="cert-name">Oracle Database SQL Certified Associate</div><div class="cert-issuer">Oracle</div><div class="cert-date">Issued Feb 2019 · ID: OC1857304</div></div></div>
+      <div class="cert-card"><div class="cert-icon other">G</div><div><div class="cert-name">Fundamentals of Digital Marketing</div><div class="cert-issuer">Google</div><div class="cert-date">Issued Apr 2022</div></div></div>
+      <div class="cert-card"><div class="cert-icon other">DFF</div><div><div class="cert-name">Foundations of Emerging Technologies</div><div class="cert-issuer">Dubai Future Foundation</div><div class="cert-date">Issued Dec 2022</div></div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+function showCerts(e, tab) {
+  document.querySelectorAll('.cert-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.cert-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('cert-' + tab).classList.add('active');
+  e.target.classList.add('active');
+}
+</script>
+
+<section id="contact">
+  <div class="container">
+    <p class="section-tag">Contact</p>
+    <h2 class="section-title">Let's connect</h2>
+    <p class="contact-desc">Open to research collaborations, PhD opportunities, and industry partnerships in aviation AI, big data analytics, and sustainability.</p>
+    <div class="contact-links">
+      <a href="https://github.com/feminaanzil" class="contact-link">⚡ GitHub</a>
+      <a href="mailto:feminaanzil@gmail.com" class="contact-link">✉ Email</a>
+      <a href="https://www.linkedin.com/in/feminaanzil/" class="contact-link">🔗 LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Femina Anzil · Data Science & AI · UAE</footer>
+
+</body>
+</html>
